@@ -142,7 +142,7 @@ CREATE TABLE IF NOT EXISTS `sherry`.`test_bool` (
 CREATE TABLE IF NOT EXISTS `sherry`.`visits` (
     `VisitDate` DATE NOT NULL,
     `Hour` TINYINT UNSIGNED NOT NULL,
-    `ClientID` UNKNOWN NOT NULL,
+    `ClientID` CHAR(36) NOT NULL,
     PRIMARY KEY (Hour)
     ) ENGINE=InnoDB
     ;

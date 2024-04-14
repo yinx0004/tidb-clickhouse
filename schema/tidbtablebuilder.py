@@ -224,6 +224,8 @@ class TableSQLBuilder(TableProcessor):
             tidb_type = 'BOOLEAN'
         elif clickhouse_type.startswith("Object('json')"):
             tidb_type = 'JSON'
+        elif clickhouse_type.startswith('UUID'):
+            tidb_type = 'CHAR(36)'
         else:
             tidb_type = 'UNKNOWN'
 
