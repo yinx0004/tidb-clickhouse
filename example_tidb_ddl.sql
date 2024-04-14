@@ -116,7 +116,7 @@ CREATE TABLE IF NOT EXISTS `sherry`.`order_info` (
     INDEX `oid_idx` (oid),
     INDEX `idx_seller_nick` (seller_nick),
     INDEX `idx_seller_nick_order_status` (seller_nick, order_status)
-    ) ENGINE=InnoDB
+    ) ENGINE=InnoDB -- partition key toYYYYMMDD(gmt_order_create)
     ;
     
 CREATE TABLE IF NOT EXISTS `sherry`.`secondary` (
@@ -142,9 +142,17 @@ CREATE TABLE IF NOT EXISTS `sherry`.`test_bool` (
 CREATE TABLE IF NOT EXISTS `sherry`.`visits` (
     `VisitDate` DATE NOT NULL,
     `Hour` TINYINT UNSIGNED NOT NULL,
-    `ClientID` CHAR(36) NOT NULL,
+    `ClientID` TINYINT UNSIGNED NOT NULL,
     PRIMARY KEY (Hour)
-    ) ENGINE=InnoDB
+    ) ENGINE=InnoDB -- partition key toYYYYMM(VisitDate)
+    ;
+    
+CREATE TABLE IF NOT EXISTS `sherry`.`visits2` (
+    `VisitDate` DATE NOT NULL,
+    `Hour` TINYINT UNSIGNED NOT NULL,
+    `ClientID` TINYINT UNSIGNED NOT NULL,
+    PRIMARY KEY (Hour)
+    ) ENGINE=InnoDB -- partition key toYYYYMM(VisitDate)
     ;
     
 CREATE TABLE IF NOT EXISTS `sherry`.`was` (
