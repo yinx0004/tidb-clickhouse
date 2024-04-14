@@ -2,27 +2,10 @@
 This tool helps migration ClickHouse table to TiDB
 
 ## Supported Features
-- dump clickhouse table schema as DDL
-- convert clickhouse table schema as TiDB supported DDL
- 
-## Requirements
-- Python3.8
+- dump clickhouse table schema as DDL, [example](clickhouse_ddl.sql).
+- convert clickhouse table schema as TiDB supported DDL, [example](tidb_ddl.sql).
 
-## How to Install
-```shell
-pip3 install -r requirements.txt
-```
-
-## How to Use
-```shell
-python3 main.py --help
-
-python3 main.py dump-clickhouse-table-schema -h 127.0.0.1 -P 9000 -u default -p xx -d db1,db2
-
-python3 main.py build-tidb-table-schema -h 127.0.0.1 -P 9000 -u default -p xxx -d db1,db2
-```
-
-## Date Type Mapping
+## Data Type Mapping
 |ClickHouse |TiDB             |
 |-----------|-----------------|
 |UInt8      |TINYINT UNSIGNED |
@@ -45,7 +28,7 @@ python3 main.py build-tidb-table-schema -h 127.0.0.1 -P 9000 -u default -p xxx -
 |Bool       |BOOLEAN          |
 |JSON       |JSON             |
 
-### String type
+### String type Mapping
 length: max(lengthUTF8())
 
 |length| type                      |
@@ -54,5 +37,23 @@ length: max(lengthUTF8())
 |lenght > 255| TEXT                      |
 |lenght > 65535| MEDIUMTEXT                |
 |lenght > 16777215| LONGTEXT                  |
+
+ 
+## Requirements
+- Python3.8
+
+## How to Install
+```shell
+pip3 install -r requirements.txt
+```
+
+## How to Use
+```shell
+python3 main.py --help
+
+python3 main.py dump-clickhouse-table-schema -h 127.0.0.1 -P 9000 -u default -p xx -d db1,db2
+
+python3 main.py build-tidb-table-schema -h 127.0.0.1 -P 9000 -u default -p xxx -d db1,db2
+```
 
 
