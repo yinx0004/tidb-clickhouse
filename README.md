@@ -2,8 +2,8 @@
 This tool helps migration ClickHouse table to TiDB
 
 ## Supported Features
-- dump clickhouse table schema as DDL, [example](clickhouse_ddl.sql).
-- convert clickhouse table schema as TiDB supported DDL, [example](tidb_ddl.sql).
+- dump clickhouse table schema as DDL, [example](example_clickhouse_ddl.sql).
+- convert clickhouse table schema as TiDB supported DDL, [example](example_tidb_ddl.sql).
 
 ## Data Type Mapping
 |ClickHouse |TiDB             |

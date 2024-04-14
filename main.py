@@ -16,7 +16,7 @@ def cli():
 @click.option('--user', '-u', help='clickhouse user', required=True)
 @click.option('--passwd', '-p', help='clickhouse password', required=True)
 @click.option('--dbs', '-d', help='a list of clickhouse databases name', required=True)
-@click.option('--file', '-f', help='ddl output file name', default="clickhouse_ddl.sql")
+@click.option('--file', '-f', help='ddl output file name', default="example_clickhouse_ddl.sql")
 def dump_clickhouse_table_schema(host, port, user, passwd, dbs, file):
     logger.info("start to connect to clickhouse server")
     tp = TableProcessor(host, port, user, passwd, dbs)
@@ -27,7 +27,7 @@ def dump_clickhouse_table_schema(host, port, user, passwd, dbs, file):
         res = tp.show_create_table(db, table)
         ddl = res[0][0] + ';\n\n'
         append2file(file, ddl)
-    logger.info("Dump clickhouse table schema completed! Please find the ddl output in outputs/{}".format(file))
+    logger.info("Dump clickhouse table schema completed! Please find the clickhouse table ddl output in {}".format(file))
 
 
 @cli.command()
@@ -36,7 +36,7 @@ def dump_clickhouse_table_schema(host, port, user, passwd, dbs, file):
 @click.option('--user', '-u', help='clickhouse user', required=True)
 @click.option('--passwd', '-p', help='clickhouse password', required=True)
 @click.option('--dbs', '-d', help='a list of clickhouse databases name', required=True)
-@click.option('--file', '-f', help='ddl output file name', default="tidb_ddl.sql")
+@click.option('--file', '-f', help='ddl output file name', default="example_tidb_ddl.sql")
 def build_tidb_table_schema(host, port, user, passwd, dbs, file):
     tidb_ddl = ''
     tb = TableSQLBuilder(host, port, user, passwd, dbs)
@@ -53,6 +53,7 @@ def build_tidb_table_schema(host, port, user, passwd, dbs, file):
         table_ddl = tb.create_table_sql(db_name, table_name, res)
         tidb_ddl = tidb_ddl + table_ddl
     append2file(file, tidb_ddl)
+    logger.info("Build clickhouse table to TiDB table completed! Please find the tidb ddl output in {}".format(file))
 
 
 if __name__ == '__main__':

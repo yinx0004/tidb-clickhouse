@@ -2,13 +2,13 @@ CREATE DATABASE IF NOT EXISTS `test`;
 
 CREATE DATABASE IF NOT EXISTS `sherry`;
 
-CREATE TABLE IF NOT EXISTS test.felix (
+CREATE TABLE IF NOT EXISTS `test`.`felix` (
     `id` INT NOT NULL DEFAULT 100,
     PRIMARY KEY (id)
     ) ENGINE=InnoDB
     ;
     
-CREATE TABLE IF NOT EXISTS test.my_first_table (
+CREATE TABLE IF NOT EXISTS `test`.`my_first_table` (
     `user_id` INT UNSIGNED NOT NULL,
     `message` TEXT NOT NULL,
     `timestamp` DATETIME NOT NULL,
@@ -17,12 +17,12 @@ CREATE TABLE IF NOT EXISTS test.my_first_table (
     ) ENGINE=InnoDB
     ;
     
-CREATE TABLE IF NOT EXISTS test.nullable (
+CREATE TABLE IF NOT EXISTS `test`.`nullable` (
     `n` INT UNSIGNED
     ) ENGINE=InnoDB
     ;
     
-CREATE TABLE IF NOT EXISTS test.stock (
+CREATE TABLE IF NOT EXISTS `test`.`stock` (
     `s_i_id` INT NOT NULL,
     `s_w_id` INT NOT NULL,
     `s_quantity` INT,
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS test.stock (
     ) ENGINE=InnoDB
     ;
     
-CREATE TABLE IF NOT EXISTS test.users_a (
+CREATE TABLE IF NOT EXISTS `test`.`users_a` (
     `uid` SMALLINT NOT NULL,
     `name` VARCHAR(255) NOT NULL,
     `age` SMALLINT NOT NULL,
@@ -40,19 +40,19 @@ CREATE TABLE IF NOT EXISTS test.users_a (
     ) ENGINE=InnoDB
     ;
     
-CREATE TABLE IF NOT EXISTS test.yy (
+CREATE TABLE IF NOT EXISTS `test`.`yy` (
     `name` CHAR(10) NOT NULL,
     PRIMARY KEY (name)
     ) ENGINE=InnoDB
     ;
     
-CREATE TABLE IF NOT EXISTS test.zz (
+CREATE TABLE IF NOT EXISTS `test`.`zz` (
     `name` VARCHAR(255) NOT NULL,
     PRIMARY KEY (name)
     ) ENGINE=InnoDB
     ;
     
-CREATE TABLE IF NOT EXISTS sherry.asynchronous_inserts (
+CREATE TABLE IF NOT EXISTS `sherry`.`asynchronous_inserts` (
     `query` VARCHAR(255) NOT NULL,
     `database` VARCHAR(255) NOT NULL,
     `table` VARCHAR(255) NOT NULL,
@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS sherry.asynchronous_inserts (
     ) ENGINE=InnoDB
     ;
     
-CREATE TABLE IF NOT EXISTS sherry.certificates (
+CREATE TABLE IF NOT EXISTS `sherry`.`certificates` (
     `version` INT NOT NULL,
     `serial_number` VARCHAR(255),
     `signature_algo` VARCHAR(255),
@@ -80,41 +80,74 @@ CREATE TABLE IF NOT EXISTS sherry.certificates (
     ) ENGINE=InnoDB
     ;
     
-CREATE TABLE IF NOT EXISTS sherry.dt (
+CREATE TABLE IF NOT EXISTS `sherry`.`dt` (
     `timestamp` DATETIME NOT NULL,
     `event_id` TINYINT UNSIGNED NOT NULL
     ) ENGINE=InnoDB
     ;
     
-CREATE TABLE IF NOT EXISTS sherry.dt64 (
+CREATE TABLE IF NOT EXISTS `sherry`.`dt64` (
     `timestamp` DATETIME NOT NULL,
     `event_id` TINYINT UNSIGNED NOT NULL
     ) ENGINE=InnoDB
     ;
     
-CREATE TABLE IF NOT EXISTS sherry.float_vs_decimal (
+CREATE TABLE IF NOT EXISTS `sherry`.`float_vs_decimal` (
     `my_float` DOUBLE NOT NULL,
     `my_decimal` DECIMAL(18, 3) NOT NULL
     ) ENGINE=InnoDB
     ;
     
-CREATE TABLE IF NOT EXISTS sherry.json (
+CREATE TABLE IF NOT EXISTS `sherry`.`json` (
     `o` JSON NOT NULL
     ) ENGINE=InnoDB
     ;
     
-CREATE TABLE IF NOT EXISTS sherry.t_enum (
+CREATE TABLE IF NOT EXISTS `sherry`.`order_info` (
+    `oid` BIGINT UNSIGNED NOT NULL,
+    `buyer_nick` VARCHAR(255) NOT NULL,
+    `seller_nick` VARCHAR(255) NOT NULL,
+    `payment` DECIMAL(18, 4) NOT NULL,
+    `order_status` TINYINT UNSIGNED NOT NULL,
+    `gmt_order_create` DATETIME NOT NULL,
+    `gmt_order_pay` DATETIME NOT NULL,
+    `gmt_update_time` DATETIME NOT NULL,
+    PRIMARY KEY (seller_nick, gmt_order_create),
+    INDEX `oid_idx` (oid),
+    INDEX `idx_seller_nick` (seller_nick),
+    INDEX `idx_seller_nick_order_status` (seller_nick, order_status)
+    ) ENGINE=InnoDB
+    ;
+    
+CREATE TABLE IF NOT EXISTS `sherry`.`secondary` (
+    `oid` BIGINT UNSIGNED NOT NULL,
+    `buyer_nick` VARCHAR(255) NOT NULL,
+    `order_status` TINYINT UNSIGNED NOT NULL,
+    PRIMARY KEY (oid),
+    INDEX `order_status_idx` (order_status)
+    ) ENGINE=InnoDB
+    ;
+    
+CREATE TABLE IF NOT EXISTS `sherry`.`t_enum` (
     `x` ENUM('hello','world') NOT NULL
     ) ENGINE=InnoDB
     ;
     
-CREATE TABLE IF NOT EXISTS sherry.test_bool (
+CREATE TABLE IF NOT EXISTS `sherry`.`test_bool` (
     `A` BIGINT NOT NULL,
     `B` BOOLEAN NOT NULL
     ) ENGINE=InnoDB
     ;
     
-CREATE TABLE IF NOT EXISTS sherry.was (
+CREATE TABLE IF NOT EXISTS `sherry`.`visits` (
+    `VisitDate` DATE NOT NULL,
+    `Hour` TINYINT UNSIGNED NOT NULL,
+    `ClientID` UNKNOWN NOT NULL,
+    PRIMARY KEY (Hour)
+    ) ENGINE=InnoDB
+    ;
+    
+CREATE TABLE IF NOT EXISTS `sherry`.`was` (
     `name` VARCHAR(255) NOT NULL,
     PRIMARY KEY (name)
     ) ENGINE=InnoDB
