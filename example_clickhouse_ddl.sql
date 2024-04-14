@@ -131,6 +131,38 @@ CREATE TABLE sherry.json
 )
 ENGINE = Memory;
 
+CREATE TABLE sherry.order_info
+(
+    `oid` UInt64,
+    `buyer_nick` String,
+    `seller_nick` String,
+    `payment` Decimal(18, 4),
+    `order_status` UInt8,
+    `gmt_order_create` DateTime,
+    `gmt_order_pay` DateTime,
+    `gmt_update_time` DateTime,
+    INDEX oid_idx oid TYPE minmax GRANULARITY 32,
+    INDEX idx_seller_nick seller_nick TYPE minmax GRANULARITY 1,
+    INDEX idx_seller_nick_order_status (seller_nick, order_status) TYPE minmax GRANULARITY 1
+)
+ENGINE = MergeTree
+PARTITION BY toYYYYMMDD(gmt_order_create)
+PRIMARY KEY (seller_nick, gmt_order_create)
+ORDER BY (seller_nick, gmt_order_create, oid)
+SETTINGS index_granularity = 8192;
+
+CREATE TABLE sherry.secondary
+(
+    `oid` UInt64,
+    `buyer_nick` String,
+    `order_status` UInt8,
+    INDEX order_status_idx order_status TYPE minmax GRANULARITY 32
+)
+ENGINE = MergeTree
+PRIMARY KEY oid
+ORDER BY oid
+SETTINGS index_granularity = 8192;
+
 CREATE TABLE sherry.t_enum
 (
     `x` Enum8('hello' = 1, 'world' = 2)
@@ -143,6 +175,17 @@ CREATE TABLE sherry.test_bool
     `B` Bool
 )
 ENGINE = Memory;
+
+CREATE TABLE sherry.visits
+(
+    `VisitDate` Date,
+    `Hour` UInt8,
+    `ClientID` UUID
+)
+ENGINE = MergeTree
+PARTITION BY toYYYYMM(VisitDate)
+ORDER BY Hour
+SETTINGS index_granularity = 8192;
 
 CREATE TABLE sherry.was
 (

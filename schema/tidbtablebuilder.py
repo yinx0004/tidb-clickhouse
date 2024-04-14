@@ -55,6 +55,21 @@ class TableSQLBuilder(TableProcessor):
                 table,
             ))
 
+    def fetch_secondary_index(self, db, table):
+        try:
+            data_skipping_index = self.client.execute(sql.get_data_skipping_indices, {'db': db, 'table': table})
+            return data_skipping_index
+        except Exception as err:
+            self.logger.error("Fetch data skipping index error on db {} table {}: {}".format(db, table, str(err)))
+            raise Exception("Can not get data skipping index on host={} port={} user={} password={} db={} table={}".format(
+                self.host,
+                self.port,
+                self.user,
+                self.passwd,
+                db,
+                table
+            ))
+
     def fetch_primary_key_fields(self, columns_description):
         """
         Fetch list of primary keys columns names
@@ -136,6 +151,7 @@ class TableSQLBuilder(TableProcessor):
                 column = '`{}` {} {}'.format(name, tidb_type, tag_default)
             tidb_columns.append(column.strip())
 
+        # primary key
         primary_key_fields = self.fetch_primary_key_fields(columns_description)
         if primary_key_fields:
             if len(primary_key_fields) > 1:
@@ -144,7 +160,14 @@ class TableSQLBuilder(TableProcessor):
                 primary_keys = 'PRIMARY KEY ({})'.format(primary_key_fields[0])
             tidb_columns.append(primary_keys)
 
-        sql = """CREATE TABLE IF NOT EXISTS {}.{} (
+        # secondary key
+        secondary_indices = self.fetch_secondary_index(db, table)
+        if secondary_indices is not None and len(secondary_indices) > 0:
+            for index, column in secondary_indices:
+                secondary_index = 'INDEX `{}` ({})'.format(index, column)
+                tidb_columns.append(secondary_index)
+
+        sql = """CREATE TABLE IF NOT EXISTS `{}`.`{}` (
     {}
     ) {}
     ;
