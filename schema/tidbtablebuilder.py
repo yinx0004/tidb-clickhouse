@@ -55,6 +55,40 @@ class TableSQLBuilder(TableProcessor):
                 table,
             ))
 
+    def fetch_partition_key(self, db, table):
+        try:
+            res = self.client.execute(sql.get_partition_key, {'db': db, 'table': table})
+            partition_key = res[0][0]
+            if len(partition_key) > 0:
+                return partition_key
+            else:
+                return None
+        except Exception as err:
+            self.logger.error("Fetch partition key error on db {} table {}: {}".format(db, table, str(err)))
+            raise Exception("Can not get partition key on host={} port={} user={} password={} db={} table={}".format(
+                self.host,
+                self.port,
+                self.user,
+                self.passwd,
+                db,
+                table
+            ))
+
+    def fetch_partitions(self, db, table):
+        try:
+            partitions = self.client.execute(sql.get_partitions, {'db': db, 'table': table})
+            return partitions
+        except Exception as err:
+            self.logger.error("Fetch partitions error on db {} table {}: {}".format(db, table, str(err)))
+            raise Exception("Can not get partitions on host={} port={} user={} password={} db={} table={}".format(
+                self.host,
+                self.port,
+                self.user,
+                self.passwd,
+                db,
+                table
+            ))
+
     def fetch_secondary_index(self, db, table):
         try:
             data_skipping_index = self.client.execute(sql.get_data_skipping_indices, {'db': db, 'table': table})
@@ -167,6 +201,11 @@ class TableSQLBuilder(TableProcessor):
                 secondary_index = 'INDEX `{}` ({})'.format(index, column)
                 tidb_columns.append(secondary_index)
 
+        # partition key
+        partition_key = self.fetch_partition_key(db, table)
+        if partition_key is not None:
+            engine += ' -- partition key {}'.format(partition_key)
+
         sql = """CREATE TABLE IF NOT EXISTS `{}`.`{}` (
     {}
     ) {}
@@ -265,10 +304,10 @@ class TableSQLBuilder(TableProcessor):
             tidb_type = '{}({})'.format(type, string_length)
         return tidb_type
 
-    def adjust_enum_type(self, type, clickhoust_type):
+    def adjust_enum_type(self, type, clickhouse_type):
         if type == 'ENUM':
             enum = []
-            res = fetch_in_brackets(clickhoust_type)
+            res = fetch_in_brackets(clickhouse_type)
             items = res.split(',')
             for item in items:
                 key = item.split('=')[0].strip()
@@ -280,9 +319,9 @@ class TableSQLBuilder(TableProcessor):
             self.logger.error('Not enum type: {}'.format(type))
             raise Exception("Not enum type: {}".format(type))
 
-    def adjust_decimal_type(self, type, clickhoust_type):
+    def adjust_decimal_type(self, type, clickhouse_type):
         if type == 'DECIMAL':
-            res = fetch_in_brackets(clickhoust_type)
+            res = fetch_in_brackets(clickhouse_type)
             decimal = '({})'.format(res)
             tidb_type = type + decimal
             return tidb_type
